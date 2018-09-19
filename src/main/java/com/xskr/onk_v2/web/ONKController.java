@@ -1,9 +1,9 @@
 //package com.xskr.onk_v2.web;
 //
 //import com.xskr.onk_v2.entity.Room;
-//import com.xskr.onk_v2.scene.ButtonType;
-//import com.xskr.onk_v2.scene.HallScene;
-//import com.xskr.onk_v2.scene.XskrMessage;
+//import com.xskr.onk_v2.status.ButtonType;
+//import com.xskr.onk_v2.status.HallScene;
+//import com.xskr.onk_v2.message.XskrMessage;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -30,22 +30,11 @@
 ////        Room room = idRoomMap.get(roomID);
 //        ButtonType buttonType = ButtonType.valueOf(buttonTypeString);
 ////        String userName = getCurrentUserName();
-////        room.getScene().pick(userName, buttonType, buttonID, null);
+////        room.getStatus().pick(userName, buttonType, buttonID, null);
 //        XskrMessage xskrMessage = hallScene.pick(getCurrentUserName(), buttonType, buttonValue, null);
 //
 //    }
 //
-//    private void sendQueueMessage(int roomID, XskrMessage message){
-//        String roomWebSocketQueue = "/queue/" + roomID;
-//        System.out.println(roomWebSocketQueue + '\t' + message);
-//        simpMessagingTemplate.convertAndSendToUser(getCurrentUserName(), roomWebSocketQueue, message);
-//    }
-//
-//    private void sendTopicMessage(int roomID, XskrMessage message){
-//        String roomWebSocketTopic = "/topic/" + roomID;
-//        System.out.println(roomWebSocketTopic + "\t" + message);
-//        simpMessagingTemplate.convertAndSend(roomWebSocketTopic, message);
-//    }
 //
 //
 //}

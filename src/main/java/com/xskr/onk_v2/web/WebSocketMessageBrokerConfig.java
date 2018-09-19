@@ -13,13 +13,11 @@ public class WebSocketMessageBrokerConfig implements WebSocketMessageBrokerConfi
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/queue");
-        //TODO 如果改为AJAX调用下面这行可以去掉
-        config.setApplicationDestinationPrefixes("/sjb");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/sjb/endpoint", "/onk/endpoint").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/endpoint/onk/hall", "/endpoint/onk/room", "/endpoint/onk/player").setAllowedOrigins("*").withSockJS();
     }
 
 }

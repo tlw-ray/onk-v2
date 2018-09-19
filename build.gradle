@@ -29,7 +29,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-websocket')
 
-    compile("org.webjars:webjars-locator-entity")
+    compile("org.webjars:webjars-locator-core")
     compile("org.webjars:bootstrap:3.3.7")
     compile("org.webjars:jquery:3.1.0")
     compile("org.webjars:sockjs-client:1.0.2")

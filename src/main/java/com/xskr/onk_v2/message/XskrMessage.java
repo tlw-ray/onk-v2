@@ -1,4 +1,4 @@
-package com.xskr.onk_v2.scene;
+package com.xskr.onk_v2.message;
 
 import com.xskr.onk_v2.entity.ClientAction;
 

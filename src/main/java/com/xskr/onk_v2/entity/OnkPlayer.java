@@ -1,12 +1,13 @@
 package com.xskr.onk_v2.entity;
 
-import com.xskr.onk_v2.scene.XskrMessage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.xskr.onk_v2.message.XskrMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OnkPlayer implements Comparable<OnkPlayer>{
-	
+
 	private String name;
 	private Card initializeCard;								//玩家初始卡牌信息
 	private Card card;											//玩家当前卡牌信息
@@ -16,13 +17,13 @@ public class OnkPlayer implements Comparable<OnkPlayer>{
 	private int votedCount;										//该玩家被投票的次数
 	private List<XskrMessage> keyMessages = new ArrayList();	//存放客户端的关键信息，供断线重连后查看
 	private ClientAction lastAction;							//存放该玩家当前的行动信息，供断线重连后查看
-	private Room room;											//玩家当前所在房间信息
+	private transient Room room;								//玩家当前所在房间信息
 
 	public OnkPlayer(String name) {
 		super();
 		this.name = name.trim();
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -39,7 +40,7 @@ public class OnkPlayer implements Comparable<OnkPlayer>{
 		return ready;
 	}
 
-	void setReady(boolean ready) {
+	public void setReady(boolean ready) {
 		this.ready = ready;
 	}
 
@@ -99,6 +100,7 @@ public class OnkPlayer implements Comparable<OnkPlayer>{
 		this.lastAction = lastAction;
 	}
 
+	@JsonIgnore
 	public Room getRoom() {
 		return room;
 	}

@@ -1,45 +1,106 @@
 package com.xskr.onk_v2.entity;
 
-import com.xskr.onk_v2.Player;
-import com.xskr.onk_v2.Scene;
-import com.xskr.onk_v2.scene.Preparing;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import com.xskr.onk_v2.status.OnkStatus;
 
 import java.util.*;
 
 public class Room {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
     public static final int TABLE_DECK_THICKNESS = 3;
 
     // 房间号
     private int id;
-    // 用于客户端识别当前登录用户, TODO 应由框架引入
-    private Player currentPlayer;
+    // 用于客户端识别当前登录用户的座位, TODO 应由框架引入
+    private OnkPlayer currentPlayer;
     // 该房间的创建者
     private String owner;
 
-
-
     // 该房间开启使用的卡牌
     private Map<Card, Boolean> cardUsingMap = new HashMap(Card.values().length);
-    // 发牌后剩余的桌面3张牌垛
-    private Card[] desktopCards = new Card[TABLE_DECK_THICKNESS];
-    // 所有进入房间的玩家(包含已经有座位和还没有座位的)
-    private Set<OnkPlayer> players = new TreeSet();
-
+    // 发牌后剩余的桌面3张牌垛, 序号从1开始
+    private Map<Integer, Card> desktopCards = new TreeMap();
+    // 所有进入房间的玩家(包含已经有座位和还没有座位的)，座位从1开始排
+    private Set<OnkPlayer> allPlayers = new TreeSet();
 
     // 游戏所处的状态
-    private Scene scene = new Preparing(this);
+    private OnkStatus status = OnkStatus.PREPARING;
 
+    /**
+     * 获得当前房间所有被房主选中使用的卡牌
+     * @return
+     */
+    public Card[] getUsingCards(){
+        List<Card> usingCards = new ArrayList();
+        for(Map.Entry<Card, Boolean> entry: getCardUsingMap().entrySet()){
+            Card card = entry.getKey();
+            if(entry.getValue()){
+                usingCards.add(card);
+            }
+        }
+        return usingCards.toArray(new Card[0]);
+    }
 
-    // 用于发送WebSocket信息
-    protected SimpMessagingTemplate simpMessagingTemplate;
+    /**
+     * 获得当前房间的座位数
+     */
+    public int getSeatCount(){
+        return getUsingCards().length - TABLE_DECK_THICKNESS;
+    }
 
+    /**
+     * 获得当前房间有座位的玩家集合
+     */
+    public Set<OnkPlayer> getSeatPlayers(){
+        Set<OnkPlayer> seatPlayers = new TreeSet();
+        for(OnkPlayer onkPlayer:getAllPlayers()){
+            if(onkPlayer.getSeat() > 0){
+                seatPlayers.add(onkPlayer);
+            }
+        }
+        return seatPlayers;
+    }
 
+    /**
+     * 获得当前房间内观看者玩家集合
+     * @return
+     */
+    public Set<OnkPlayer> getObserverPlayers(){
+        Set<OnkPlayer> observerPlayers = new TreeSet();
+        for(OnkPlayer onkPlayer:getAllPlayers()){
+            if(onkPlayer.getSeat() < 0){
+                observerPlayers.add(onkPlayer);
+            }
+        }
+        return observerPlayers;
+    }
+
+    /**
+     * 根据玩家的名称从房间内找到
+     * @param playerName
+     * @return
+     */
+    public OnkPlayer getPlayerByName(String playerName){
+        for(OnkPlayer onkPlayer:getAllPlayers()){
+            if(onkPlayer.getName().equals(playerName)){
+                return onkPlayer;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 根据玩家的座位从房间内找到
+     * @param seat
+     * @return
+     */
+    public OnkPlayer getPlayerBySeat(int seat){
+        for(OnkPlayer onkPlayer:getAllPlayers()){
+            if(onkPlayer.getSeat() == seat){
+                return onkPlayer;
+            }
+        }
+        return null;
+    }
 
     public int getId() {
         return id;
@@ -49,11 +110,11 @@ public class Room {
         this.id = id;
     }
 
-    public Player getCurrentPlayer() {
+    public OnkPlayer getCurrentPlayer() {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(Player currentPlayer) {
+    public void setCurrentPlayer(OnkPlayer currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
@@ -61,40 +122,20 @@ public class Room {
         return cardUsingMap;
     }
 
-    public void setCardUsingMap(Map<Card, Boolean> cardUsingMap) {
-        this.cardUsingMap = cardUsingMap;
-    }
-
-    public Card[] getDesktopCards() {
+    public Map<Integer, Card> getDesktopCards() {
         return desktopCards;
     }
 
-    public void setDesktopCards(Card[] desktopCards) {
-        this.desktopCards = desktopCards;
+    public Set<OnkPlayer> getAllPlayers() {
+        return allPlayers;
     }
 
-    public Set<OnkPlayer> getPlayers() {
-        return players;
+    public OnkStatus getStatus() {
+        return status;
     }
 
-    public void setPlayers(Set<OnkPlayer> players) {
-        this.players = players;
-    }
-
-    public Scene getScene() {
-        return scene;
-    }
-
-    public void setScene(Scene scene) {
-        this.scene = scene;
-    }
-
-    public SimpMessagingTemplate getSimpMessagingTemplate() {
-        return simpMessagingTemplate;
-    }
-
-    public void setSimpMessagingTemplate(SimpMessagingTemplate simpMessagingTemplate) {
-        this.simpMessagingTemplate = simpMessagingTemplate;
+    public void setStatus(OnkStatus status) {
+        this.status = status;
     }
 
     public String getOwner() {
